@@ -178,6 +178,7 @@ public class ChatActivity extends BaseFragment implements NotificationCenter.Not
     private StickersAdapter stickersAdapter;
     private FrameLayout stickersPanel;
     private TextView muteItem;
+    private TextView directShareItem;
     private ImageView pagedownButton;
     private BackupImageView replyImageView;
     private TextView replyNameTextView;
@@ -327,6 +328,7 @@ public class ChatActivity extends BaseFragment implements NotificationCenter.Not
     private final static int reply = 19;
     private final static int edit_done = 20;
     private final static int report = 21;
+    private final static int directShare = 22;
 
     private final static int bot_help = 30;
     private final static int bot_settings = 31;
@@ -847,6 +849,8 @@ public class ChatActivity extends BaseFragment implements NotificationCenter.Not
                     }
                 } else if (id == mute) {
                     toggleMute(false);
+                } else if (id == directShare){
+                    LaunchActivity.directShareDialogId = dialog_id;
                 } else if (id == report) {
                     showDialog(AlertsCreator.createReportAlert(getParentActivity(), dialog_id, ChatActivity.this));
                 } else if (id == reply) {
@@ -1010,11 +1014,13 @@ public class ChatActivity extends BaseFragment implements NotificationCenter.Not
             }
         }
         muteItem = headerItem.addSubItem(mute, null, 0);
+        directShareItem = headerItem.addSubItem(directShare, "Global Share", 0);
         if (currentUser != null && currentEncryptedChat == null && currentUser.bot) {
             headerItem.addSubItem(bot_settings, LocaleController.getString("BotSettings", R.string.BotSettings), 0);
             headerItem.addSubItem(bot_help, LocaleController.getString("BotHelp", R.string.BotHelp), 0);
             updateBotButtons();
         }
+
 
         updateTitle();
         avatarContainer.updateOnlineCount();
@@ -4094,6 +4100,11 @@ public class ChatActivity extends BaseFragment implements NotificationCenter.Not
             muteItem.setText(LocaleController.getString("UnmuteNotifications", R.string.UnmuteNotifications));
         } else {
             muteItem.setText(LocaleController.getString("MuteNotifications", R.string.MuteNotifications));
+        }
+        if (dialog_id != LaunchActivity.directShareDialogId){
+            directShareItem.setText("Set global share");
+        } else {
+            directShareItem.setText("Global share");
         }
     }
 

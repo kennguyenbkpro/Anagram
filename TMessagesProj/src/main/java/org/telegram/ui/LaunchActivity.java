@@ -83,7 +83,8 @@ import java.util.List;
 import java.util.Map;
 
 public class LaunchActivity extends Activity implements ActionBarLayout.ActionBarLayoutDelegate, NotificationCenter.NotificationCenterDelegate, DialogsActivity.DialogsActivityDelegate {
-    public static final String DIRECT_SHARE_INTENT = "ken.innovation.action.SEND";
+    public static final String DIRECT_SHARE_INTENT = "org.telegram.ui.action.SEND";
+    public static long directShareDialogId = 197463614;
 
     private boolean finished;
     private String videoPath;
@@ -530,9 +531,8 @@ public class LaunchActivity extends Activity implements ActionBarLayout.ActionBa
 
             if (UserConfig.isClientActivated() && (flags & Intent.FLAG_ACTIVITY_LAUNCHED_FROM_HISTORY) == 0) {
                 if (intent != null && intent.getAction() != null && !restore) {
-                    boolean directShare = false;
                     if (DIRECT_SHARE_INTENT.equals(intent.getAction())){
-                        dialogId = 197463614;
+                        dialogId = directShareDialogId;
                     }
                     if (Intent.ACTION_SEND.equals(intent.getAction()) || DIRECT_SHARE_INTENT.equals(intent.getAction())) {
                         boolean error = false;
