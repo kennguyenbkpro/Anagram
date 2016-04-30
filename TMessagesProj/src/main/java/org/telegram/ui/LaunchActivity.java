@@ -83,6 +83,7 @@ import java.util.List;
 import java.util.Map;
 
 public class LaunchActivity extends Activity implements ActionBarLayout.ActionBarLayoutDelegate, NotificationCenter.NotificationCenterDelegate, DialogsActivity.DialogsActivityDelegate {
+    public static final String DIRECT_SHARE_INTENT = "ken.innovation.action.SEND";
 
     private boolean finished;
     private String videoPath;
@@ -529,7 +530,11 @@ public class LaunchActivity extends Activity implements ActionBarLayout.ActionBa
 
             if (UserConfig.isClientActivated() && (flags & Intent.FLAG_ACTIVITY_LAUNCHED_FROM_HISTORY) == 0) {
                 if (intent != null && intent.getAction() != null && !restore) {
-                    if (Intent.ACTION_SEND.equals(intent.getAction())) {
+                    boolean directShare = false;
+                    if (DIRECT_SHARE_INTENT.equals(intent.getAction())){
+                        dialogId = 197463614;
+                    }
+                    if (Intent.ACTION_SEND.equals(intent.getAction()) || DIRECT_SHARE_INTENT.equals(intent.getAction())) {
                         boolean error = false;
                         String type = intent.getType();
                         if (type != null && type.equals(ContactsContract.Contacts.CONTENT_VCARD_TYPE)) {
@@ -1381,6 +1386,11 @@ public class LaunchActivity extends Activity implements ActionBarLayout.ActionBa
             } else {
                 args.putInt("enc_id", high_id);
             }
+            if (dialogsFragment == null){
+                directShareTo(dialog_id);
+                finish();
+                return;
+            }
             if (!MessagesController.checkCanOpenChat(args, dialogsFragment)) {
                 return;
             }
@@ -1429,6 +1439,33 @@ public class LaunchActivity extends Activity implements ActionBarLayout.ActionBa
             documentsPathsArray = null;
             documentsOriginalPathsArray = null;
             contactsToSend = null;
+        }
+    }
+
+    private void directShareTo(long dialog_id){
+        try {
+            if (videoPath != null) {
+                SendMessagesHelper.prepareSendingVideo(videoPath, 0, 0, 0, 0, null, dialog_id, null, true);
+            } else {
+                if (sendingText != null) {
+                    SendMessagesHelper.prepareSendingText(sendingText, dialog_id, true);
+                }
+
+                if (photoPathsArray != null) {
+                    SendMessagesHelper.prepareSendingPhotos(null, photoPathsArray, dialog_id, null, null, true);
+                }
+                if (documentsPathsArray != null || documentsUrisArray != null) {
+                    SendMessagesHelper.prepareSendingDocuments(documentsPathsArray, documentsOriginalPathsArray, documentsUrisArray, documentsMimeType, dialog_id, null, true);
+                }
+                if (contactsToSend != null && !contactsToSend.isEmpty()) {
+                    for (TLRPC.User user : contactsToSend) {
+                        SendMessagesHelper.getInstance().sendMessage(user, dialog_id, null, true, null, null);
+                    }
+                }
+            }
+        } catch (Exception e){
+            e.printStackTrace();
+            Toast.makeText(LaunchActivity.this, "Can not share because " + e.getMessage(), Toast.LENGTH_SHORT).show();
         }
     }
 
