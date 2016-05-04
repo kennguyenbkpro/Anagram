@@ -45,6 +45,7 @@ android {
             debuggable true
             jniDebuggable true
             signingConfig signingConfigs.debug
+//            minifyEnabled true
             applicationIdSuffix ".beta"
         }
 
