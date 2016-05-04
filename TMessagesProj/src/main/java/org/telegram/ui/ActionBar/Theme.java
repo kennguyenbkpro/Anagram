@@ -337,7 +337,7 @@ public class Theme {
             attachButtonDrawables[3] = context.getResources().getDrawable(R.drawable.attach_audio_states);
             attachButtonDrawables[4] = context.getResources().getDrawable(R.drawable.attach_file_states);
             attachButtonDrawables[5] = context.getResources().getDrawable(R.drawable.attach_contact_states);
-            attachButtonDrawables[6] = context.getResources().getDrawable(R.drawable.attach_location_states);
+            attachButtonDrawables[6] = context.getResources().getDrawable(R.drawable.attach_question);
             attachButtonDrawables[7] = context.getResources().getDrawable(R.drawable.attach_hide_states);
 
             cornerOuter[0] = context.getResources().getDrawable(R.drawable.corner_out_tl);

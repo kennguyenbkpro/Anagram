@@ -42,43 +42,41 @@ import android.widget.ListView;
 import android.widget.RelativeLayout;
 import android.widget.Toast;
 
-import org.telegram.messenger.AndroidUtilities;
 import org.telegram.PhoneFormat.PhoneFormat;
+import org.telegram.messenger.AndroidUtilities;
+import org.telegram.messenger.ApplicationLoader;
 import org.telegram.messenger.ChatObject;
 import org.telegram.messenger.ContactsController;
+import org.telegram.messenger.FileLog;
 import org.telegram.messenger.ImageLoader;
-import org.telegram.messenger.MessageObject;
+import org.telegram.messenger.LocaleController;
 import org.telegram.messenger.MessagesController;
 import org.telegram.messenger.MessagesStorage;
 import org.telegram.messenger.NativeCrashManager;
-import org.telegram.messenger.SendMessagesHelper;
-import org.telegram.messenger.UserObject;
-import org.telegram.messenger.Utilities;
-import org.telegram.messenger.ApplicationLoader;
-import org.telegram.messenger.FileLog;
-import org.telegram.messenger.LocaleController;
 import org.telegram.messenger.NotificationCenter;
 import org.telegram.messenger.R;
+import org.telegram.messenger.SendMessagesHelper;
+import org.telegram.messenger.UserConfig;
+import org.telegram.messenger.UserObject;
+import org.telegram.messenger.Utilities;
 import org.telegram.messenger.browser.Browser;
 import org.telegram.tgnet.ConnectionsManager;
 import org.telegram.tgnet.RequestDelegate;
 import org.telegram.tgnet.TLObject;
 import org.telegram.tgnet.TLRPC;
-import org.telegram.messenger.UserConfig;
-import org.telegram.ui.Adapters.DrawerLayoutAdapter;
 import org.telegram.ui.ActionBar.ActionBarLayout;
 import org.telegram.ui.ActionBar.BaseFragment;
 import org.telegram.ui.ActionBar.DrawerLayoutContainer;
+import org.telegram.ui.ActionBar.Theme;
+import org.telegram.ui.Adapters.DrawerLayoutAdapter;
 import org.telegram.ui.Components.LayoutHelper;
 import org.telegram.ui.Components.PasscodeView;
 import org.telegram.ui.Components.StickersAlert;
-import org.telegram.ui.ActionBar.Theme;
 
 import java.io.BufferedReader;
 import java.io.InputStream;
 import java.io.InputStreamReader;
 import java.util.ArrayList;
-import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
@@ -1841,39 +1839,40 @@ public class LaunchActivity extends Activity implements ActionBarLayout.ActionBa
             if (!mainFragmentsStack.isEmpty()) {
                 mainFragmentsStack.get(mainFragmentsStack.size() - 1).showDialog(builder.create());
             }
-        } else if (id == NotificationCenter.wasUnableToFindCurrentLocation) {
-            final HashMap<String, MessageObject> waitingForLocation = (HashMap<String, MessageObject>) args[0];
-            AlertDialog.Builder builder = new AlertDialog.Builder(this);
-            builder.setTitle(LocaleController.getString("AppName", R.string.AppName));
-            builder.setPositiveButton(LocaleController.getString("OK", R.string.OK), null);
-            builder.setNegativeButton(LocaleController.getString("ShareYouLocationUnableManually", R.string.ShareYouLocationUnableManually), new DialogInterface.OnClickListener() {
-                @Override
-                public void onClick(DialogInterface dialogInterface, int i) {
-                    if (mainFragmentsStack.isEmpty()) {
-                        return;
-                    }
-                    BaseFragment lastFragment = mainFragmentsStack.get(mainFragmentsStack.size() - 1);
-                    if (!AndroidUtilities.isGoogleMapsInstalled(lastFragment)) {
-                        return;
-                    }
-                    LocationActivity fragment = new LocationActivity();
-                    fragment.setDelegate(new LocationActivity.LocationActivityDelegate() {
-                        @Override
-                        public void didSelectLocation(TLRPC.MessageMedia location) {
-                            for (HashMap.Entry<String, MessageObject> entry : waitingForLocation.entrySet()) {
-                                MessageObject messageObject = entry.getValue();
-                                SendMessagesHelper.getInstance().sendMessage(location, messageObject.getDialogId(), messageObject, false, null, null);
-                            }
-                        }
-                    });
-                    presentFragment(fragment);
-                }
-            });
-            builder.setMessage(LocaleController.getString("ShareYouLocationUnable", R.string.ShareYouLocationUnable));
-            if (!mainFragmentsStack.isEmpty()) {
-                mainFragmentsStack.get(mainFragmentsStack.size() - 1).showDialog(builder.create());
-            }
         }
+//        else if (id == NotificationCenter.wasUnableToFindCurrentLocation) {
+//            final HashMap<String, MessageObject> waitingForLocation = (HashMap<String, MessageObject>) args[0];
+//            AlertDialog.Builder builder = new AlertDialog.Builder(this);
+//            builder.setTitle(LocaleController.getString("AppName", R.string.AppName));
+//            builder.setPositiveButton(LocaleController.getString("OK", R.string.OK), null);
+//            builder.setNegativeButton(LocaleController.getString("ShareYouLocationUnableManually", R.string.ShareYouLocationUnableManually), new DialogInterface.OnClickListener() {
+//                @Override
+//                public void onClick(DialogInterface dialogInterface, int i) {
+//                    if (mainFragmentsStack.isEmpty()) {
+//                        return;
+//                    }
+//                    BaseFragment lastFragment = mainFragmentsStack.get(mainFragmentsStack.size() - 1);
+//                    if (!AndroidUtilities.isGoogleMapsInstalled(lastFragment)) {
+//                        return;
+//                    }
+//                    LocationActivity fragment = new LocationActivity();
+//                    fragment.setDelegate(new LocationActivity.LocationActivityDelegate() {
+//                        @Override
+//                        public void didSelectLocation(TLRPC.MessageMedia location) {
+//                            for (HashMap.Entry<String, MessageObject> entry : waitingForLocation.entrySet()) {
+//                                MessageObject messageObject = entry.getValue();
+//                                SendMessagesHelper.getInstance().sendMessage(location, messageObject.getDialogId(), messageObject, false, null, null);
+//                            }
+//                        }
+//                    });
+//                    presentFragment(fragment);
+//                }
+//            });
+//            builder.setMessage(LocaleController.getString("ShareYouLocationUnable", R.string.ShareYouLocationUnable));
+//            if (!mainFragmentsStack.isEmpty()) {
+//                mainFragmentsStack.get(mainFragmentsStack.size() - 1).showDialog(builder.create());
+//            }
+//        }
     }
 
     private void onPasscodePause() {

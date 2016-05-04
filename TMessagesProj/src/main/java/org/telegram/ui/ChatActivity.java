@@ -339,7 +339,7 @@ public class ChatActivity extends BaseFragment implements NotificationCenter.Not
     private final static int attach_audio = 3;
     private final static int attach_document = 4;
     private final static int attach_contact = 5;
-    private final static int attach_location = 6;
+    private final static int attach_question = 6;
 
     private final static int search = 40;
     private final static int search_up = 41;
@@ -2977,24 +2977,17 @@ public class ChatActivity extends BaseFragment implements NotificationCenter.Not
             } catch (Exception e) {
                 FileLog.e("tmessages", e);
             }
-        } else if (which == attach_location) {
-            if (!AndroidUtilities.isGoogleMapsInstalled(ChatActivity.this)) {
-                return;
-            }
-            LocationActivity fragment = new LocationActivity();
-            fragment.setDelegate(new LocationActivity.LocationActivityDelegate() {
+        }
+        else if (which == attach_question) {
+            QuestionActivity fragment = new QuestionActivity(new QuestionActivity.QuestionActivityDelegate() {
                 @Override
-                public void didSelectLocation(TLRPC.MessageMedia location) {
-                    SendMessagesHelper.getInstance().sendMessage(location, dialog_id, replyingMessageObject, chatActivityEnterView == null || chatActivityEnterView.asAdmin(), null, null);
-                    moveScrollToLastMessage();
-                    showReplyPanel(false, null, null, null, false, true);
-                    if (paused) {
-                        scrollToTopOnResume = true;
-                    }
+                public void onDidComposeQuestion(String question, String answer, int time) {
+                    SendMessagesHelper.prepareSendingText(question + answer + time, dialog_id, true);
                 }
             });
             presentFragment(fragment);
-        } else if (which == attach_document) {
+        }
+        else if (which == attach_document) {
             if (Build.VERSION.SDK_INT >= 23 && getParentActivity().checkSelfPermission(Manifest.permission.READ_EXTERNAL_STORAGE) != PackageManager.PERMISSION_GRANTED) {
                 getParentActivity().requestPermissions(new String[]{Manifest.permission.READ_EXTERNAL_STORAGE}, 4);
                 return;
@@ -8017,9 +8010,9 @@ public class ChatActivity extends BaseFragment implements NotificationCenter.Not
                             if (!AndroidUtilities.isGoogleMapsInstalled(ChatActivity.this)) {
                                 return;
                             }
-                            LocationActivity fragment = new LocationActivity();
-                            fragment.setMessageObject(message);
-                            presentFragment(fragment);
+//                            LocationActivity fragment = new LocationActivity();
+//                            fragment.setMessageObject(message);
+//                            presentFragment(fragment);
                         } else if (message.type == 9 || message.type == 0) {
                             File f = null;
                             String fileName = message.getFileName();
