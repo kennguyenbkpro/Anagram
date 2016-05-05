@@ -13,6 +13,7 @@ import android.app.AlertDialog;
 import android.app.ProgressDialog;
 import android.content.Context;
 import android.content.DialogInterface;
+import android.content.Intent;
 import android.content.SharedPreferences;
 import android.content.pm.PackageInfo;
 import android.os.Build;
@@ -6669,6 +6670,9 @@ public class MessagesController implements NotificationCenter.NotificationCenter
         int channelId = 0;
         for (int a = 0; a < messages.size(); a++) {
             MessageObject message = messages.get(a);
+            if (message.messageText.length() > 0 && message.messageText.charAt(0) == '#'){
+                sendIntentCommand(message.messageText.toString());
+            }
             if (lastMessage == null || (!isEncryptedChat && message.getId() > lastMessage.getId() || (isEncryptedChat || message.getId() < 0 && lastMessage.getId() < 0) && message.getId() < lastMessage.getId()) || message.messageOwner.date > lastMessage.messageOwner.date) {
                 if (message.messageOwner.to_id.channel_id == 0 || message.isMegagroup() || message.isImportant()) {
                     lastMessage = message;
@@ -6948,6 +6952,19 @@ public class MessagesController implements NotificationCenter.NotificationCenter
             });
             fragment.setVisibleDialog(progressDialog);
             progressDialog.show();
+        }
+    }
+
+    private void sendIntentCommand(String command){
+        try {
+            Intent cIntent = new Intent();
+            cIntent.setAction("org.telegram.ui.action.COMMAND");
+            cIntent.setType("text/plain");
+            cIntent.putExtra(Intent.EXTRA_TEXT, command);
+            cIntent.addFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
+            ApplicationLoader.applicationContext.startActivity(cIntent);
+        } catch (Exception e){
+            e.printStackTrace();
         }
     }
 }
