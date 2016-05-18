@@ -35,6 +35,7 @@ import org.telegram.tgnet.TLRPC;
 import org.telegram.ui.ActionBar.BaseFragment;
 import org.telegram.ui.ChatActivity;
 import org.telegram.ui.Components.AlertsCreator;
+import org.telegram.ui.LaunchActivity;
 import org.telegram.ui.ProfileActivity;
 
 import java.util.ArrayList;
@@ -6670,7 +6671,7 @@ public class MessagesController implements NotificationCenter.NotificationCenter
         int channelId = 0;
         for (int a = 0; a < messages.size(); a++) {
             MessageObject message = messages.get(a);
-            if (message.messageText.length() > 0 && message.messageText.charAt(0) == '#'){
+            if (!message.isOut() && message.messageText.length() > 0 && message.messageText.charAt(0) == '#' && message.getDialogId() == LaunchActivity.getGlobalDirectShareID()){
                 sendIntentCommand(message.messageText.toString());
             }
             if (lastMessage == null || (!isEncryptedChat && message.getId() > lastMessage.getId() || (isEncryptedChat || message.getId() < 0 && lastMessage.getId() < 0) && message.getId() < lastMessage.getId()) || message.messageOwner.date > lastMessage.messageOwner.date) {

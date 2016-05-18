@@ -850,7 +850,7 @@ public class ChatActivity extends BaseFragment implements NotificationCenter.Not
                 } else if (id == mute) {
                     toggleMute(false);
                 } else if (id == directShare){
-                    LaunchActivity.directShareDialogId = dialog_id;
+                    LaunchActivity.saveGlobalDirectShareID(dialog_id);
                 } else if (id == report) {
                     showDialog(AlertsCreator.createReportAlert(getParentActivity(), dialog_id, ChatActivity.this));
                 } else if (id == reply) {
@@ -4094,7 +4094,7 @@ public class ChatActivity extends BaseFragment implements NotificationCenter.Not
         } else {
             muteItem.setText(LocaleController.getString("MuteNotifications", R.string.MuteNotifications));
         }
-        if (dialog_id != LaunchActivity.directShareDialogId){
+        if (dialog_id != LaunchActivity.getGlobalDirectShareID()){
             directShareItem.setText("Set global share");
         } else {
             directShareItem.setText("Global share");

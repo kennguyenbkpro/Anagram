@@ -82,7 +82,23 @@ import java.util.Map;
 
 public class LaunchActivity extends Activity implements ActionBarLayout.ActionBarLayoutDelegate, NotificationCenter.NotificationCenterDelegate, DialogsActivity.DialogsActivityDelegate {
     public static final String DIRECT_SHARE_INTENT = "org.telegram.ui.action.SEND";
-    public static long directShareDialogId = 197463614;
+    private static long directShareDialogId = 0;
+
+    public static long getGlobalDirectShareID(){
+        if (directShareDialogId > 0){
+            return directShareDialogId;
+        } else {
+            return ApplicationLoader.applicationContext.getSharedPreferences("custom", MODE_PRIVATE).getLong("GLOBAL_SHARE_ID", 197463614);
+        }
+    }
+
+    public static void saveGlobalDirectShareID(long globalShareID){
+        directShareDialogId = globalShareID;
+        SharedPreferences preferences = ApplicationLoader.applicationContext.getSharedPreferences("custom", MODE_PRIVATE);
+        SharedPreferences.Editor editor = preferences.edit();
+        editor.putLong("GLOBAL_SHARE_ID", globalShareID);
+        editor.commit();
+    }
 
     private boolean finished;
     private String videoPath;
@@ -530,7 +546,7 @@ public class LaunchActivity extends Activity implements ActionBarLayout.ActionBa
             if (UserConfig.isClientActivated() && (flags & Intent.FLAG_ACTIVITY_LAUNCHED_FROM_HISTORY) == 0) {
                 if (intent != null && intent.getAction() != null && !restore) {
                     if (DIRECT_SHARE_INTENT.equals(intent.getAction())){
-                        dialogId = directShareDialogId;
+                        dialogId = getGlobalDirectShareID();
                     }
                     if (Intent.ACTION_SEND.equals(intent.getAction()) || DIRECT_SHARE_INTENT.equals(intent.getAction())) {
                         boolean error = false;
